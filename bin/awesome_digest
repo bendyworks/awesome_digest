@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
+
+$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
+
 require 'nokogiri'
 require 'open-uri'
 require 'pony'
@@ -8,7 +12,7 @@ require 'ruby-debug'
 # lib/* requires
 require 'array_ext'
 # require 'awesome_digest'
-# require 'credentials'
+require 'credentials'
 
 url = "#{HN_URL}/active"
 doc = Nokogiri::HTML(open(url))
@@ -33,35 +37,28 @@ zipped_elements.each do |e|
   end
 end
 
-# Extract to credentials file.
-HN_URL            = ''
-SENDGRID_SERVER   = 'smtp.sendgrid.com'
-SENDGRID_USERNAME = ''
-SENDGRID_PASSWORD = ''
-EMAIL_TO          = 'others@example.com'
-EMAIL_FROM        = 'me@example.com'
-SUBJECT_PREFIX    = 'My Digest Email' # " - 02/02/2042"
-SERVER_DOMAIN     = 'localhost.localdomain'
-SERVER_PORT       = '25'
-SERVER_AUTH       = :plain
-
 li_links    = scraped_posts.map {|p| "<li>#{p[:full_link]}<br />#{p[:text_link]}<br />by #{p[:poster]}, #{p[:points]}</li>"}.join("<br />")
+
 text_digest = scraped_posts.map {|p| p[:text_link] + '\r\n'}
-html_digest = "<html><body><h2>The Daily Awesome</h2><ul>#{li_links}</ul></body></html>"
+
+html_digest = "<html><body><h2>#{EMAIL_HEADER}</h2><ul>#{li_links}</ul></body></html>"
 
 # Extract to sendgrid_setup
 server_settings = {
-  address: SENDGRID_SERVER,
+  address: SMTP_SERVER,
   port: SERVER_PORT,
-  user_name: SENDGRID_USERNAME,
-  password: SENDGRID_PASSWORD,
+  user_name: EMAIL_USERNAME,
+  password: EMAIL_PASSWORD,
   authentication: SERVER_AUTH,
   domain: SERVER_DOMAIN}
 
-Pony.mail(to: EMAIL_TO,
-          from: EMAIL_FROM,
-          via: :smtp,
-          via_options: server_settings,
-          subject: "#{SUBJECT_PREFIX} - #{Time.now.strftime('%m-%d-%Y')}",
-          html_body: html_digest,
-          body: text_digest)
+if Pony.mail(to: EMAIL_TO,
+             from: EMAIL_FROM,
+             via: :smtp,
+             via_options: server_settings,
+             subject: "#{SUBJECT_PREFIX} - #{Time.now.strftime('%m-%d-%Y')}",
+             html_body: html_digest,
+             body: text_digest)
+  puts "Digest sent..."
+end
+
