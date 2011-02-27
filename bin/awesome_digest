@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
-
 $LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 
 require 'nokogiri'
@@ -9,10 +8,10 @@ require 'open-uri'
 require 'pony'
 require 'ruby-debug'
 
-# lib/* requires
+# awesome_digest requires
 require 'array_ext'
-# require 'awesome_digest'
 require 'credentials'
+# require 'awesome_digest'
 
 url = "#{HN_URL}/active"
 doc = Nokogiri::HTML(open(url))
@@ -21,6 +20,9 @@ zipped_elements = doc.css("tr td.title[3]").zip(doc.css("tr td.subtext"))
 
 scraped_posts = []
 
+# Parses the subtext under the news article for:
+# "1 point(s)", "username", "5", "minute(s), hours, etc.",
+# "1 comment(s) (or "discuss" if there are no comments)"
 subtext_regex = /\A(?<points>\d+ points?)\Wby\W(?<poster>\w+)\W(?<num_of>\d+)\W(?<time_type>minutes?|hours?|days?|weeks?|months?|years?)\Wago\W+\|\W(?<comments>\d+ comments?|discuss)/
 
 zipped_elements.each do |e|
@@ -37,7 +39,7 @@ zipped_elements.each do |e|
   end
 end
 
-li_links    = scraped_posts.map {|p| "<li>#{p[:full_link]}<br />#{p[:text_link]}<br />by #{p[:poster]}, #{p[:points]}</li>"}.join("<br />")
+li_links = scraped_posts.map {|p| "<li>#{p[:full_link]}<br />#{p[:text_link]}<br />by #{p[:poster]}, #{p[:points]}</li>"}.join("<br />")
 
 text_digest = scraped_posts.map {|p| p[:text_link] + '\r\n'}
 
@@ -50,7 +52,8 @@ server_settings = {
   user_name: EMAIL_USERNAME,
   password: EMAIL_PASSWORD,
   authentication: SERVER_AUTH,
-  domain: SERVER_DOMAIN}
+  domain: SERVER_DOMAIN }
+
 
 if Pony.mail(to: EMAIL_TO,
              from: EMAIL_FROM,
@@ -61,4 +64,3 @@ if Pony.mail(to: EMAIL_TO,
              body: text_digest)
   puts "Digest sent..."
 end
-
