@@ -27,7 +27,8 @@ subtext_regex = /\A(?<points>\d+ points?)\Wby\W(?<poster>\w+)\W(?<num_of>\d+)\W(
 
 zipped_elements.each do |e|
   m = subtext_regex.match(e.second.text)
-  if m[:time_type] =~ /minutes?|hours?/
+  
+  if m[:num_of].to_i <= 7 && m[:time_type] =~ /days?/
     post_map = {}
     post_map[:full_link]   = e.first.xpath("a").to_html
     post_map[:text_link]   = e.first.at_xpath("a[@href]").values.first

@@ -4,7 +4,7 @@ GEM
     activesupport (3.0.4)
     archive-tar-minitar (0.5.2)
     columnize (0.3.2)
-    cronedit (0.3.0)
+    diff-lcs (1.1.2)
     i18n (0.5.0)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
@@ -14,10 +14,20 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    mocha (0.9.12)
     nokogiri (1.4.4)
     polyglot (0.3.1)
     pony (1.1)
       mail (> 2.0)
+    rcov (0.9.9)
+    rspec (2.5.0)
+      rspec-core (~> 2.5.0)
+      rspec-expectations (~> 2.5.0)
+      rspec-mocks (~> 2.5.0)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.5.0)
     ruby-debug-base19 (0.11.24)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -35,7 +45,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  cronedit
+  bundler
+  mocha
   nokogiri
   pony
+  rcov
+  rspec
   ruby-debug19
