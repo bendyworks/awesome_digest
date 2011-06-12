@@ -36,6 +36,9 @@ def parse_feed(doc)
 
     return { text_digest: text_digest,
              html_digest: html_digest }
+  elsif SEND_EMPTY
+    return { text_digest: EMPTY_MESSAGE,
+             html_digest: Haml::Engine.new(File.read('views/email.haml')).render(Object.new, {:li_links => EMPTY_MESSAGE }) }
   else
     puts "No new posts to send!"
     Kernel.exit
