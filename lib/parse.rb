@@ -31,7 +31,7 @@ def parse_feed(doc)
 
     text_digest = scraped_posts.map {|p| p[:text_link] + '\r\n'}
 
-    html_digest = Haml::Engine.new(File.read('views/email.haml')).render(Object.new, {:li_links => li_links}) 
+    html_digest = Haml::Engine.new(File.read('views/email.haml')).render(Object.new, {:li_links => li_links})
                   # "<html><body><h2>#{EMAIL_HEADER}</h2><ul>#{li_links}</ul></body></html>"
 
     return { text_digest: text_digest,
