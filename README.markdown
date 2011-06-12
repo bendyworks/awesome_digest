@@ -7,7 +7,7 @@ It's opinionated and uses sendgrid  at the moment, but you could change
 that up if you want.
 
 If you wanna wire things up fill in the relevant constants in
-bin/awesome_digest.rb and run it.  Simple.
+lib/credentials.rb and run it.  Simple.
 
 ----------
 
