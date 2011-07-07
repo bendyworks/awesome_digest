@@ -1,0 +1,7 @@
+%li
+  = post[:full_link]
+  %br
+  %a{:href => post[:text_link]}
+    = post[:text_link]
+  %br
+  = "by #{post[:poster]}, #{post[:points]}"

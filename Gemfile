@@ -3,6 +3,7 @@ source "http://rubygems.org"
 # gem 'cronedit'
 gem 'nokogiri'
 gem 'pony'
+gem 'haml'
 
 group :development do
   gem 'bundler'
