@@ -7,61 +7,17 @@ require 'nokogiri'
 require 'open-uri'
 require 'pony'
 require 'ruby-debug'
+require 'haml'
 
 # awesome_digest requires
 require 'array_ext'
 require 'credentials'
-# require 'awesome_digest'
+require 'parse'
+require 'send_mail'
 
 url = "#{HN_URL}/active"
-doc = Nokogiri::HTML(open(url))
+document = Nokogiri::HTML(open(url))
 
-zipped_elements = doc.css("tr td.title[3]").zip(doc.css("tr td.subtext"))
+digests = parse_feed(document)
 
-scraped_posts = []
-
-# Parses the subtext under the news article for:
-# "1 point(s)", "username", "5", "minute(s), hours, etc.",
-# "1 comment(s) (or "discuss" if there are no comments)"
-subtext_regex = /\A(?<points>\d+ points?)\Wby\W(?<poster>\w+)\W(?<num_of>\d+)\W(?<time_type>minutes?|hours?|days?|weeks?|months?|years?)\Wago\W+\|\W(?<comments>\d+ comments?|discuss)/
-
-zipped_elements.each do |e|
-  m = subtext_regex.match(e.second.text)
-  
-  if m[:time_type] =~ /minutes?|hours?/
-    post_map = {}
-    post_map[:full_link]   = e.first.xpath("a").to_html
-    post_map[:text_link]   = e.first.at_xpath("a[@href]").values.first
-    post_map[:time_ago]    = "#{m[:num_of]} #{m[:time_type]} ago"
-    post_map[:points]      = m[:points]
-    post_map[:comments]    = m[:comments] # if m[:comments] != "discuss"
-    post_map[:poster]      = m[:poster]
-    scraped_posts << post_map
-  end
-end
-
-li_links = scraped_posts.map {|p| "<li>#{p[:full_link]}<br />#{p[:text_link]}<br />by #{p[:poster]}, #{p[:points]}</li>"}.join("<br />")
-
-text_digest = scraped_posts.map {|p| p[:text_link] + '\r\n'}
-
-html_digest = "<html><body><h2>#{EMAIL_HEADER}</h2><ul>#{li_links}</ul></body></html>"
-
-# Extract to sendgrid_setup
-server_settings = {
-  address: SMTP_SERVER,
-  port: SERVER_PORT,
-  user_name: EMAIL_USERNAME,
-  password: EMAIL_PASSWORD,
-  authentication: SERVER_AUTH,
-  domain: SERVER_DOMAIN }
-
-
-if Pony.mail(to: EMAIL_TO,
-             from: EMAIL_FROM,
-             via: :smtp,
-             via_options: server_settings,
-             subject: "#{SUBJECT_PREFIX} - #{Time.now.strftime('%m-%d-%Y')}",
-             html_body: html_digest,
-             body: text_digest)
-  puts "Digest sent..."
-end
+send_mail(digests)
