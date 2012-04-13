@@ -20,3 +20,4 @@ rdoc
 pkg
 .bundle
 lib/credentials.rb
+.rvmrc
