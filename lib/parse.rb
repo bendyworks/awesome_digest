@@ -26,10 +26,10 @@ def parse_feed(doc)
   end
 
   if scraped_posts.present?
-    li_links = scraped_posts.map { |post|
-      Haml::Engine.new(File.read('views/link.haml')).render(Object.new, {:post => post})
+    li_links = scraped_posts.each_with_index.map { |post, i|
+      Haml::Engine.new(File.read('views/link.haml')).render(Object.new, {:post => post, :i => i})
       #"<li>#{p[:full_link]}<br />#{p[:text_link]}<br />by #{p[:poster]}, #{p[:points]}</li>"
-    }.join("<br />")
+    }.join
 
     text_digest = scraped_posts.map {|p| p[:text_link] + '\r\n'}
 
