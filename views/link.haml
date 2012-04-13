@@ -1,7 +1,9 @@
-%li
+%li(style="#{i%2==0 ? 'padding:6px;background:#EEE;' : 'padding:6px;'}")
   = post[:full_link]
+  %span
+    = post[:domain]
   %br
-  %a{:href => post[:text_link]}
-    = post[:text_link]
-  %br
-  = "by #{post[:poster]}, #{post[:points]}"
+  %span
+    = "#{post[:points]} by #{post[:poster]} | "
+  %span
+    %a{:href => post[:comments_link]}= post[:comments]
