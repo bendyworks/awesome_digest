@@ -13,12 +13,14 @@ def parse_feed(doc)
 
     if m[:time_type] =~ /minutes?|hours?/
       post_map = {}
-      post_map[:full_link]   = e.first.xpath("a").to_html
-      post_map[:text_link]   = e.first.at_xpath("a[@href]").values.first
-      post_map[:time_ago]    = "#{m[:num_of]} #{m[:time_type]} ago"
-      post_map[:points]      = m[:points]
-      post_map[:comments]    = m[:comments] # if m[:comments] != "discuss"
-      post_map[:poster]      = m[:poster]
+      post_map[:full_link]      = e.first.xpath("a").to_html
+      post_map[:text_link]      = e.first.at_xpath("a[@href]").values.first
+      post_map[:domain]         = e.first.children.children.last.text
+      post_map[:time_ago]       = "#{m[:num_of]} #{m[:time_type]} ago"
+      post_map[:points]         = m[:points]
+      post_map[:comments_link]  = "#{HN_URL}/#{e[1].children[-1].attributes['href'].value}"
+      post_map[:comments]       = m[:comments]
+      post_map[:poster]         = m[:poster]
       scraped_posts << post_map
     end
   end
