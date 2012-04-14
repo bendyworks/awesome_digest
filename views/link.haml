@@ -1,7 +1,6 @@
 %li(style="padding: 8px; #{i%2==0 ? 'background:#EEE;' : ''}")
-  = post[:full_link]
-  %span
-    = post[:domain]
+  %span(style="font-size:1.1em;")
+    = post[:full_link] + post[:domain]
   %br
   %span
     = "#{post[:points]} by #{post[:poster]} | "
