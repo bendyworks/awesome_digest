@@ -1,8 +1,9 @@
-%li(style="padding: 8px; #{i%2==0 ? 'background:#EEE;' : ''}")
-  %span(style="font-size:1.1em;")
+%li(style="padding: 8px; #{i%2==0 ? 'background:#F8F8F8' : ''}")
+  %span(style="line-height: 1.4em; font-size:1.1em")
     = post[:full_link] + post[:domain]
   %br
   %span
     = "#{post[:points]} by #{post[:poster]} | "
   %span
-    %a{:href => post[:comments_link]}= post[:comments]
+    %a{:href => post[:comments_link]}
+      = post[:comments]
