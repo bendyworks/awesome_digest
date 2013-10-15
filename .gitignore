@@ -21,3 +21,5 @@ pkg
 .bundle
 lib/credentials.rb
 .rvmrc
+.ruby-gemset
+.ruby-version
