@@ -1,3 +1,5 @@
+require 'canonical_link_builder'
+
 def parse_feed(doc)
   zipped_elements = doc.css("tr td.title[3]").zip(doc.css("tr td.subtext"))
 
@@ -13,8 +15,8 @@ def parse_feed(doc)
 
     if m[:time_type] =~ /minutes?|hours?/
       post_map = {}
-      post_map[:full_link]      = canonicalize_full_link(e.first.xpath("a").to_html)
-      post_map[:text_link]      = canonicalize_link(e.first.at_xpath("a[@href]").values.first)
+      post_map[:full_link]      = CanonicalLinkBuilder.build_full_link(e.first.xpath("a").to_html)
+      post_map[:text_link]      = CanonicalLinkBuilder.canonicalize_link(e.first.at_xpath("a[@href]").values.first)
       if post_map[:text_link].start_with?(HN_URL)
         post_map[:domain]       = ' (local)'
       else
@@ -47,17 +49,4 @@ def parse_feed(doc)
     puts "No new posts to send!"
     Kernel.exit
   end
-end
-
-def canonicalize_full_link(a_href_link)
-  regex = /href=['"]([^"']+)['"]/
-  link_target = a_href_link.match(regex)[1]
-  a_href_link.gsub(regex, "href=\"#{canonicalize_link(link_target)}\"")
-end
-
-def canonicalize_link(link)
-  if link =~ /^https?:/
-    return link
-  end
-  "#{HN_URL}/#{link}"
 end
