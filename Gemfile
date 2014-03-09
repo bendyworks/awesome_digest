@@ -4,11 +4,13 @@ source "http://rubygems.org"
 gem 'nokogiri'
 gem 'pony'
 gem 'haml'
+gem 'htmlentities'
 
 group :development do
   gem 'bundler'
   gem 'mocha'
   gem 'rspec'
   gem 'rcov'
-  gem 'ruby-debug19'
+  gem 'pry'
+  gem 'pry-debugger'
 end
